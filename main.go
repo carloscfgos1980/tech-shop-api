@@ -13,8 +13,9 @@ import (
 )
 
 type apiConfig struct {
-	db   *database.Queries
-	port string
+	db        *database.Queries
+	port      string
+	jwtSecret string
 }
 
 func main() {
@@ -30,6 +31,11 @@ func main() {
 	if port == "" {
 		log.Fatal("PORT must be set")
 	}
+	// Get the JWT secret from environment variables
+	jwtSecret := os.Getenv("JWT_SECRET")
+	if jwtSecret == "" {
+		log.Fatal("JWT_SECRET must be set")
+	}
 	// Connect to the database
 	dbConn, err := sql.Open("postgres", dbURL)
 	if err != nil {
@@ -41,8 +47,9 @@ func main() {
 	dbQueries := database.New(dbConn)
 
 	apiCfg := apiConfig{
-		port: port,
-		db:   dbQueries,
+		port:      port,
+		db:        dbQueries,
+		jwtSecret: jwtSecret,
 	}
 
 	log.Print(apiCfg.port)
@@ -50,6 +57,7 @@ func main() {
 	// Set up HTTP server
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /api/employees", apiCfg.handlerEmployeesCreate)
+	mux.HandleFunc("POST /api/login", apiCfg.handlerLogin)
 
 	// server variable to hold the server instance
 	srv := &http.Server{

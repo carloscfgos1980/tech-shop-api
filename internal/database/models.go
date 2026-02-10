@@ -18,3 +18,11 @@ type Employee struct {
 	Password  string
 	Role      string
 }
+
+type RefreshToken struct {
+	Token      string
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+	EmployeeID uuid.UUID
+	ExpiresAt  time.Time
+}

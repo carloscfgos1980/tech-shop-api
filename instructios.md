@@ -41,10 +41,10 @@ Note: Check databse exist:
 
 ```bash
 cd sql/schema
-psql postgres "postgres://carlosinfante:@localhost:5432/techshop" up
+goose postgres "postgres://carlosinfante:@localhost:5432/techshop" up
 ```
 
-5. Create querie to add values to employees table
+5. Create querie to add values to employees table (users.sql)
 
 6. Generate code. Run in the terminal from server as root directory:
 sqlc generate
@@ -56,14 +56,46 @@ sqlc generate
 
 
 ## 4. Create user
+
 1. Create functions to handle json responses (json.go)
-2. Create function to hash password (internal/auth/auth.go). We use argon21 pacjage which is needed to be installed:
+2. <internal/auth.go>. Create function to hash password (internal/auth/auth.go). We use argon21 pacjage which is needed to be installed:
 go get github.com/alexedwards/argon2id
-3. Create the handler method to create an employee (handlerEmployeesCreate)
-3.1 Define the expected parameters and response structure
-3.2 Define the response structure
-3.3 Decode the JSON request body into the parameters struct
-3.4 Hash the password before storing it in the database
+3. <internal/auth.go>. Create a function to compare passwords (CheckPasswordHash)
+4. Create the handler method to create an employee (handlerEmployeesCreate)
+4.1 Define the expected parameters and response structure
+4.2 Define the response structure
+4.3 Decode the JSON request body into the parameters struct
+4.4 Hash the password before storing it in the database
+5. <main.go>. Endpoint to create employee:
+mux.HandleFunc("POST /api/employees", apiCfg.handlerEmployeesCreate)
 
 
+## 5. Login
+
+1. Create schema to save refresh token (sq/schema/002+refresh_tokens.sql)
+2. run in the terminal the command to build the table from server as root directory:
+
+```bash
+cd sql/schema
+goose postgres "postgres://carlosinfante:@localhost:5432/techshop" up
+```
+
+3. Create querie to input data to employees table
+2. <internal/auth.go>. Create function to make JWT.
+I need to install jwt package:
+go get -u github.com/golang-jwt/jwt/v5
+5. <internal/auth.go>. Function to validate JWT
+4. <internal/auth.go>. Function to create refresh token
+5.  Method to handle login (handlerLogin)
+7.1 Define the expected parameters and response structure
+7.2 Define the response structure
+7.3 Decode the JSON request body into the parameters struct
+7.4 Retrieve the employee from the database using the provided email
+7.5 Check if the provided password matches the stored hash
+7.6 Create a JWT token for the authenticated employee
+7.7 Create a refresh token and store it in the database
+7.8 Save the refresh token in the database with an expiration time of 60 days
+7.9 Respond with the employee's details and the generated tokens (excluding the password)
+6. <main.go>. Endpoint to login:
+ mux.HandleFunc("POST /api/login", apiCfg.handlerLogin)
 
