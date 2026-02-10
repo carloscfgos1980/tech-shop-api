@@ -55,3 +55,15 @@ sqlc generate
 11. Verify the database connection
 
 
+## 4. Create user
+1. Create functions to handle json responses (json.go)
+2. Create function to hash password (internal/auth/auth.go). We use argon21 pacjage which is needed to be installed:
+go get github.com/alexedwards/argon2id
+3. Create the handler method to create an employee (handlerEmployeesCreate)
+3.1 Define the expected parameters and response structure
+3.2 Define the response structure
+3.3 Decode the JSON request body into the parameters struct
+3.4 Hash the password before storing it in the database
+
+
+

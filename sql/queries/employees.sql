@@ -9,3 +9,7 @@ VALUES (
     $3
 )
 RETURNING *;
+
+-- name: GetEmployeeByEmail :one
+SELECT * FROM employees
+WHERE email = $1;

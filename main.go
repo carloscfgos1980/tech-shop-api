@@ -47,9 +47,11 @@ func main() {
 
 	log.Print(apiCfg.port)
 
-	//
+	// Set up HTTP server
 	mux := http.NewServeMux()
+	mux.HandleFunc("POST /api/employees", apiCfg.handlerEmployeesCreate)
 
+	// server variable to hold the server instance
 	srv := &http.Server{
 		Addr:    ":" + port,
 		Handler: mux,
@@ -57,6 +59,7 @@ func main() {
 
 	log.Printf("Server is running http://localhost:%s", port)
 
+	// Start the server
 	err = srv.ListenAndServe()
 	if err != nil {
 		log.Fatalf("Server failed to start: %v", err)
