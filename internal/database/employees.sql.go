@@ -81,3 +81,29 @@ func (q *Queries) GetEmployeeByEmail(ctx context.Context, email string) (Employe
 	)
 	return i, err
 }
+
+const updateEmployee = `-- name: UpdateEmployee :one
+UPDATE employees SET email = $2, password = $3, updated_at = NOW()
+WHERE id = $1
+RETURNING id, created_at, updated_at, email, password, role
+`
+
+type UpdateEmployeeParams struct {
+	ID       uuid.UUID
+	Email    string
+	Password string
+}
+
+func (q *Queries) UpdateEmployee(ctx context.Context, arg UpdateEmployeeParams) (Employee, error) {
+	row := q.db.QueryRowContext(ctx, updateEmployee, arg.ID, arg.Email, arg.Password)
+	var i Employee
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Email,
+		&i.Password,
+		&i.Role,
+	)
+	return i, err
+}

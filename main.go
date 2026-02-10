@@ -56,8 +56,9 @@ func main() {
 
 	// Set up HTTP server
 	mux := http.NewServeMux()
-	mux.HandleFunc("POST /api/employees", apiCfg.handlerEmployeesCreate)
 	mux.HandleFunc("POST /api/login", apiCfg.handlerLogin)
+	mux.HandleFunc("POST /api/employees", apiCfg.handlerEmployeesCreate)
+	mux.HandleFunc("PUT /api/employees", apiCfg.handlerEmployeesUpdate)
 
 	// server variable to hold the server instance
 	srv := &http.Server{

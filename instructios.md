@@ -107,3 +107,19 @@ go get -u github.com/golang-jwt/jwt/v5
 4. get admin Id
 5. check if the Id math a admin
 6. check if the user has "Admin" role
+
+## 7. Update emplyoee data. Only by the employee self
+
+1. <sql/queries/employees.sql>. Querie to update employee
+2. <hable_employee_update.go> Method to update employee
+2.1 parameter struct
+2.2 struct to response
+2.3 Get token
+2.4 get user id
+2.5 Decode json to go
+2.6 hash password
+2.7 update employee and get employee for the response
+2.8 response with the new data of the employee
+
+3. <main.go>. Endpoint to update employee:
+ mux.HandleFunc("PUT /api/employees", apiCfg.handlerEmployeesUpdate)

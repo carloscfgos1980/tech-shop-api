@@ -17,3 +17,8 @@ WHERE email = $1;
 -- name: GetAdminById :one
 SELECT * FROM employees
 WHERE id = $1;
+
+-- name: UpdateEmployee :one
+UPDATE employees SET email = $2, password = $3, updated_at = NOW()
+WHERE id = $1
+RETURNING *;

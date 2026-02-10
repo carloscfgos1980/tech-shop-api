@@ -55,7 +55,7 @@ func (cfg *apiConfig) handlerEmployeesCreate(w http.ResponseWriter, r *http.Requ
 	}
 
 	log.Printf("staffer email: %s", admin.Email)
-	// check if the user has "Admin" rol
+	// check if the user has "Admin" role
 	if admin.Role != "admin" {
 		respondWithError(w, http.StatusUnauthorized, "you don't have authirzation to create employee", err)
 		return
