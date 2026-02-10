@@ -7,6 +7,8 @@ package database
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
 
 const createEmployee = `-- name: CreateEmployee :one
@@ -30,6 +32,25 @@ type CreateEmployeeParams struct {
 
 func (q *Queries) CreateEmployee(ctx context.Context, arg CreateEmployeeParams) (Employee, error) {
 	row := q.db.QueryRowContext(ctx, createEmployee, arg.Email, arg.Password, arg.Role)
+	var i Employee
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Email,
+		&i.Password,
+		&i.Role,
+	)
+	return i, err
+}
+
+const getAdminById = `-- name: GetAdminById :one
+SELECT id, created_at, updated_at, email, password, role FROM employees
+WHERE id = $1
+`
+
+func (q *Queries) GetAdminById(ctx context.Context, id uuid.UUID) (Employee, error) {
+	row := q.db.QueryRowContext(ctx, getAdminById, id)
 	var i Employee
 	err := row.Scan(
 		&i.ID,

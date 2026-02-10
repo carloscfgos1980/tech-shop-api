@@ -29,7 +29,7 @@ func (cfg *apiConfig) handlerLogin(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't decode parameters", err)
 		return
 	}
-	//
+	// Retrieve the employee from the database using the provided email
 	employee, err := cfg.db.GetEmployeeByEmail(r.Context(), params.Email)
 	if err != nil {
 		respondWithError(w, http.StatusUnauthorized, "Incorrect email or password", err)
@@ -64,7 +64,7 @@ func (cfg *apiConfig) handlerLogin(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't save refresh token", err)
 		return
 	}
-	//
+	// Respond with the employee's details and the generated tokens (excluding the password)
 	respondWithJSON(w, http.StatusOK, response{
 		Employee: Employee{
 			ID:        employee.ID,

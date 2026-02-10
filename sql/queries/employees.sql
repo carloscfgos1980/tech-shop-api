@@ -13,3 +13,7 @@ RETURNING *;
 -- name: GetEmployeeByEmail :one
 SELECT * FROM employees
 WHERE email = $1;
+
+-- name: GetAdminById :one
+SELECT * FROM employees
+WHERE id = $1;

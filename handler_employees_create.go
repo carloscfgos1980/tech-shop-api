@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"time"
 
@@ -31,10 +32,40 @@ func (cfg *apiConfig) handlerEmployeesCreate(w http.ResponseWriter, r *http.Requ
 	type response struct {
 		Employee Employee `json:"employee"`
 	}
+
+	// get token
+	token, err := auth.GetBearerToken(r.Header)
+	if err != nil {
+		respondWithError(w, http.StatusUnauthorized, "Couldn't find JWT", err)
+		return
+	}
+
+	// get admin Id
+	adminId, err := auth.ValidateJWT(token, cfg.jwtSecret)
+	if err != nil {
+		respondWithError(w, http.StatusUnauthorized, "Couldn't validate JWT", err)
+		return
+	}
+
+	// check if the Id math a admin
+	admin, err := cfg.db.GetAdminById(r.Context(), adminId)
+	if err != nil {
+		respondWithError(w, http.StatusUnauthorized, "you don't have authirzation to create employee", err)
+		return
+	}
+
+	log.Printf("staffer email: %s", admin.Email)
+	// check if the user has "Admin" rol
+	if admin.Role != "admin" {
+		respondWithError(w, http.StatusUnauthorized, "you don't have authirzation to create employee", err)
+		return
+
+	}
+
 	// Decode the JSON request body into the parameters struct
 	decoder := json.NewDecoder(r.Body)
 	params := parameters{}
-	err := decoder.Decode(&params)
+	err = decoder.Decode(&params)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't decode parameters", err)
 		return
@@ -46,13 +77,12 @@ func (cfg *apiConfig) handlerEmployeesCreate(w http.ResponseWriter, r *http.Requ
 		respondWithError(w, http.StatusInternalServerError, "Couldn't hash password", err)
 		return
 	}
-	//
+	// Create the employee in the database and retrieve the created employee's details
 	employee, err := cfg.db.CreateEmployee(r.Context(), database.CreateEmployeeParams{
 		Email:    params.Email,
 		Password: hashedPassword,
 		Role:     params.Role,
 	})
-	// Handle any errors that occur during employee creation
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't create employee", err)
 		return

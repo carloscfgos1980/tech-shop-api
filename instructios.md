@@ -99,3 +99,11 @@ go get -u github.com/golang-jwt/jwt/v5
 6. <main.go>. Endpoint to login:
  mux.HandleFunc("POST /api/login", apiCfg.handlerLogin)
 
+## 6. Create employee restrition. Only admin
+
+1. <sql/queries.sql>. Create a querie to get employee by id.
+2. Generate the code. command : sqlc generate
+3. <handler_employee_create.go> get token
+4. get admin Id
+5. check if the Id math a admin
+6. check if the user has "Admin" role
