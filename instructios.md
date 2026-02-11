@@ -108,10 +108,10 @@ go get -u github.com/golang-jwt/jwt/v5
 5. check if the Id math a admin
 6. check if the user has "Admin" role
 
-## 7. Update emplyoee data. Only by the employee self
+## 7. Update employoee data. Only by the employee self
 
 1. <sql/queries/employees.sql>. Querie to update employee
-2. <hable_employee_update.go> Method to update employee
+2. <handle_employee_update.go> Method to update employee
 2.1 parameter struct
 2.2 struct to response
 2.3 Get token
@@ -123,3 +123,24 @@ go get -u github.com/golang-jwt/jwt/v5
 
 3. <main.go>. Endpoint to update employee:
  mux.HandleFunc("PUT /api/employees", apiCfg.handlerEmployeesUpdate)
+
+## 8. Delete employee. Only the admin
+
+1. <sql/queries/employees.sql>. Querie to delete employee
+2. <handle_employee_delete.go> Method to update employee
+2.1 get the employee id and parse it
+2.2 get token
+2.3 get admin Id
+2.3 check if the Id math a admin
+2.4 check if the user has "Admin" role
+2.5 Delete employee from database
+2.6 response with 204 and not body
+3. <main.go>. Endpoint to delete employee:
+mux.HandleFunc("DELETE /api/employees/{employeeId}", apiCfg.handlerEmployeesDelete)
+
+## TODO
+
+1. Create functionality to refresh token
+2. Create functionality to revoke refresh token
+3. Create functionality to drop data from the databse in "dev" mod
+4. ALL ENDPOINTS to HANDLE THE ITEMS FROM THE SHOP!

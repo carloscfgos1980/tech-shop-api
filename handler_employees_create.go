@@ -59,7 +59,6 @@ func (cfg *apiConfig) handlerEmployeesCreate(w http.ResponseWriter, r *http.Requ
 	if admin.Role != "admin" {
 		respondWithError(w, http.StatusUnauthorized, "you don't have authirzation to create employee", err)
 		return
-
 	}
 
 	// Decode the JSON request body into the parameters struct

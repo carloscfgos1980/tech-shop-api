@@ -59,6 +59,7 @@ func main() {
 	mux.HandleFunc("POST /api/login", apiCfg.handlerLogin)
 	mux.HandleFunc("POST /api/employees", apiCfg.handlerEmployeesCreate)
 	mux.HandleFunc("PUT /api/employees", apiCfg.handlerEmployeesUpdate)
+	mux.HandleFunc("DELETE /api/employees/{employeeId}", apiCfg.handlerEmployeesDelete)
 
 	// server variable to hold the server instance
 	srv := &http.Server{

@@ -22,3 +22,7 @@ WHERE id = $1;
 UPDATE employees SET email = $2, password = $3, updated_at = NOW()
 WHERE id = $1
 RETURNING *;
+
+-- name: DeleteEmployee :exec
+DELETE FROM employees
+WHERE id = $1;
